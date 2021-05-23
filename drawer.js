@@ -1,8 +1,6 @@
 class DesmosDrawer {
   constructor() {
-    this.calculator = Desmos.GraphingCalculator(
-      document.getElementsByClassName('dcg-container')[0]
-    )
+    this.calculator = window.Calc
     this.count = 0
     this.otherId = []
   }
