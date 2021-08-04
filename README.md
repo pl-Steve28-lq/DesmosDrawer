@@ -5,4 +5,4 @@ Original Python Code : [kevinjycui/bad-apple/blob/master/desmos3/backend.py](htt
 ## Example
 > 우왁굳 (https://www.desmos.com/calculator/xwlnu1elml?lang=ko) <br>
 > Miss Kobayashi's Dragon Maid (https://www.desmos.com/calculator/2txnokf5jm?lang=ko) <br>
-> El Clear (https://www.desmos.com/calculator/34kfdnck5k?lang=ko) <br>
+> El Clear (https://www.desmos.com/calculator/thmrzcy3g3?lang=ko) <br>
