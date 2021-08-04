@@ -26,4 +26,4 @@ class DesmosDrawer {
 }
 
 let c = new DesmosDrawer()
-drawIt = url => Desmos.$.get(url, data => c.addAll(JSON.parse(data).map(expr => {return {expr}})))
+let drawIt = url => Desmos.$.get(url, data => c.addAll(JSON.parse(data).map(expr => {return {expr}})))
