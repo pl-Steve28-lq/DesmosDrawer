@@ -6,8 +6,8 @@ class DesmosDrawer {
   }
   
   add(info) {
-    let { expr, color, id } = info
-    id = (_ => {this.otherId.push(id); return id})() || `expr${this.count++}`
+    let { expr, color } = info
+    let id = `expr${this.count++}`
     
     this.calculator.setExpression({ latex: expr, id, color })
   }
@@ -15,13 +15,9 @@ class DesmosDrawer {
   addAll = infos => infos.forEach(this.add.bind(this))
   
   remove = id => this.calculator.removeExpression({id})
-  removeAll = ids => ids.forEach(this.remove.bind(this))
   
   clear() {
-    this.removeAll(Array(this.count).fill(0).map((_, idx) => `expr${idx}`))
-    this.removeAll(this.otherId)
-    this.count = 0
-    this.otherId = []
+    while (this.count--) this.remove(`expr${this.count}`)
   }
 }
 
