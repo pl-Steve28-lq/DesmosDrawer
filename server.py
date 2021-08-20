@@ -1,28 +1,29 @@
-import json
 from flask import Flask
 from flask_cors import CORS
 
-from PIL import Image
-from numpy import array, zeros, uint32
-from potrace import Bitmap
+from numpy import median as med
+import potrace as p
+import cv2
 
 app = Flask(__name__)
 CORS(app)
 
-def imageToArray(filename):
-  img = Image.open(filename)
-  w, h = img.size
-  data = array(img.getdata()).reshape(h, w, 3)
-  bindata = zeros((h, w), uint32)
-  for i, row in enumerate(data):
-    for j, byte in enumerate(row):
-      bindata[h-i-1, j] = 1 if sum(byte) < 127*3 else 0
-  return bindata
+def get_contours(filename, nudge = .33):
+  image = cv2.imread(filename)
+  gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+  median = max(10, min(245, med(gray)))
+  lower = int(max(0, (1 - nudge) * median))
+  upper = int(min(255, (1 + nudge) * median))
+  filtered = cv2.bilateralFilter(gray, 5, 50, 50)
+  edged = cv2.Canny(filtered, lower, upper, L2gradient = False)
+  
+  return edged[::-1]
 
-def imageToSVG(path):
-  data = imageToArray(path)
-  bmp = Bitmap(data)
-  path = bmp.trace()
+def get_trace(data):
+  for i in range(len(data)):
+    data[i][data[i] > 1] = 1
+  bmp = p.Bitmap(data)
+  path = bmp.trace(2, p.TURNPOLICY_MINORITY, 1.0, 1, .5)
   return path
 
 Bezier = lambda t0, t1: f'{t0:.3f}(1-t)+{t1:.3f}t'
@@ -32,7 +33,7 @@ def imageToBezier(path):
   latex = ''
   latex += '['
 
-  svg = imageToSVG(path)
+  svg = get_trace(get_contours(path))
 
   for curve in svg.curves:
     segments = curve.segments
@@ -67,7 +68,7 @@ def imageToBezier(path):
   latex += ']'
   return latex
 
-curve = imageToBezier('wak.jpg')
+curve = imageToBezier('h.jpg')
 
 @app.route('/')
 def index():
